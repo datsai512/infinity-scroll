@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 type SelectProps = {
     classNameSelect?:string
-    data?: [] | [string]
+    data?: [] | [string] | string[]
     valueKey?: string
     labelKey?: string
     rawString?: boolean

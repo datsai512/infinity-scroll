@@ -1,6 +1,7 @@
-import React, { useState, useEffect, ChangeEvent, useRef, LegacyRef, MutableRefObject } from "react";
+import React, { useState, useEffect, ChangeEvent, useRef } from "react";
+
 import { getListProduct, getListCategoriy, handleSearchProduct, getListProductByCategory } from '../../Request/product';
-import { ProductType, ProductResponse } from '../../Types/product';
+import { ProductType, ProductResponse, ProductCatoriesResponse } from '../../Types/product';
 import { concatQuerySearch } from '../../Utils';
 import ScrollMoreLayout from '../../Layout/ScrollMoreLayout'
 
@@ -19,7 +20,7 @@ let prevListFilter :   ProductType[] | [] = [];
 
 type ProductsComponentState = {
     listProduct:  ProductType[]  | [],
-    listCategory: [string] | [],
+    listCategory: string[] | [],
     pageSetting : {
         limit: number,
         skip:  number,
@@ -84,8 +85,8 @@ const Products = () => {
             keys:  ['name', 'title', 'price', "thumbnail", "discountPercentage", "rating", "category"],
         };
 
-        const response : ProductResponse = await getListProduct(config, false);
-        if(response.status === 200) {
+        const response : ProductResponse | any = await getListProduct(config, false);
+        if(response?.status === 200) {
             if(state.listProduct.length == 0) {
                 state.listProduct = response.products;
             } else {
@@ -103,9 +104,8 @@ const Products = () => {
             state.status = 'Done';
             if(updateUI) setState({...state});
 
-            return response.products as [ProductType];
-            
-        } else if(response.status === 400) {
+            return response.products as ProductType[];
+        } else if(response?.response?.status === 404) {
             alert('Not found');
         }else {
             alert('Internal Server!');
@@ -113,12 +113,12 @@ const Products = () => {
     }
 
     const handleGetCategories = async () => {
-        const response = await getListCategoriy();
-        if(response.status === 200) {
-            state.listCategory = response.data;
+        const response : ProductCatoriesResponse | any = await getListCategoriy();
+        if(response?.status === 200) {
+            state.listCategory = response.data as string[];
             state.listCategory.unshift('All')
             setState(prev => ({...prev}));
-        } else if(response.status === 400) {
+        } else if(response?.response.status === 404) {
             alert('Not found');
         }else {
             alert('Internal Server!');
@@ -150,12 +150,10 @@ const Products = () => {
             setState({...state});
 
         } else {
-
-            const response :ProductResponse = await handleSearchProduct({search});
-            
-            if(response.status === 200) {
-                state.listProduct = response.products;
-                if(response.products.length <= 0) {
+            const response : ProductResponse | any = await handleSearchProduct({search}) || [];
+            if(response?.status === 200) {
+                state.listProduct = response?.products;
+                if(response.products?.length <= 0) {
                     state.status = 'Nodata';
                 } else {
                     state.status = 'Done';
@@ -165,7 +163,7 @@ const Products = () => {
                 const str = search ? `/?search=${search}` : '/';
                 window.history.pushState(state, search, str);
     
-            } else if(response.status === 400) {
+            } else if(response?.response?.status === 404) {
                 alert('Not found');
             } else {
                 alert('Internal Server!');
@@ -222,8 +220,8 @@ const Products = () => {
         setState({...state});
 
         hasFilterByCategory = true;
-        const response:ProductResponse = await getListProductByCategory(value as string);
-        if(response.status === 200) {
+        const response : ProductResponse | any = await getListProductByCategory(value as string);
+        if(response?.status === 200) {
             state.listProduct = response.products;
             prevListFilter = state.listProduct;
             state.status = 'Done';
@@ -231,6 +229,10 @@ const Products = () => {
                 state.status = 'Nodata';
             }
             setState({...state});
+        } else if(response?.response?.status === 404) {
+            alert('Not found');
+        } else {
+            alert('Internal Server!');
         }
 
     }

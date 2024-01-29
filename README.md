@@ -24,7 +24,9 @@
 ### axios.
 
 ## Function implemented:
+
 ### Infinity Scrolling load more data with full list product case (All).
 ### Searching Product Using API.
 ### Filter product by category.
 ### Search product in category (Client search).
+### Data binding with filter category and search product in search params url.

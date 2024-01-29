@@ -13,12 +13,13 @@ export interface ProductType {
 }
 
 
+
 export interface ProductResponse {
-    products: [ProductType],
-    total: number,
-    skip: number,
-    limit: number,
-    status: number,
+    products: ProductType[] | [] | undefined,
+    total: number | 0,
+    skip: number | 0,
+    limit: number | 0,
+    status: number | 0,
 }
 
 export interface ProductCatoriesResponse {
