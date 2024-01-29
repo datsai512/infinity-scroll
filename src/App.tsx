@@ -1,24 +1,14 @@
 import React from 'react';
-import logo from './logo.svg';
+import Products from './Component/Products';
+import Logo from '../src/assets/logo/logo.png';
 import './App.css';
 
-function App() {
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="flex flex-col w-full h-full relative">
+      <img src={Logo} width="58" height="58" className='absolute z-30 left-[50px] top-[10px] cursor-pointer'/>
+      <Products/>
     </div>
   );
 }
